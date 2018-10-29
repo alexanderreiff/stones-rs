@@ -1,0 +1,9 @@
+[package]
+name = "stones-rs"
+version = "0.1.0"
+authors = ["Alexander Reiff <alexander.reiff@me.com>"]
+
+[dependencies]
+chrono = { version = "0.4.6" }
+diesel = { version = "1.3.3", features = ["postgres", "uuid", "chrono"] }
+uuid = { version = "0.6.5", features = ["v4"] }

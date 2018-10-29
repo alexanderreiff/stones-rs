@@ -1,0 +1,41 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:10.5-alpine
+    environment:
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USERNAME=postgres
+    volumes:
+      - 'pg_data:/var/lib/postgresql/data'
+  app:
+    build:
+      context: .
+    links:
+      - db
+    environment:
+      - DATABASE_URL=postgres://postgres:pass@db/diesel
+  test:
+    build:
+      context: .
+      target: build
+    command: cargo test
+    links:
+      - db
+    volumes:
+      - '.:/code'
+    environment:
+      - DATABASE_URL=postgres://postgres:pass@db/diesel
+      - RUST_BACKTRACE=1
+  migrate:
+    build:
+      context: .
+      target: build
+    command: diesel migration run
+    links:
+      - db
+    volumes:
+      - '.:/code'
+    environment:
+      - DATABASE_URL=postgres://postgres:pass@db/diesel
+volumes:
+  pg_data:
