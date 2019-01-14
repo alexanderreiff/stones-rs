@@ -1,10 +1,8 @@
-extern crate chrono;
 #[macro_use]
 extern crate diesel;
-extern crate uuid;
 
-pub mod schema;
 pub mod models;
+pub mod schema;
 
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
@@ -12,10 +10,9 @@ use diesel::prelude::*;
 fn establish_connection() -> PgConnection {
     use std::env;
 
-    let database_url = env::var("DATABASE_URL")
-        .expect("Env var `DATABASE_URL` must be set");
+    let database_url = env::var("DATABASE_URL").expect("Env var `DATABASE_URL` must be set");
     PgConnection::establish(&database_url)
-        .expect(&format!("Error connecting to: {}", database_url))
+        .unwrap_or_else(|_| panic!("Error connecting to: {}", database_url))
 }
 
 fn main() {
@@ -26,7 +23,7 @@ fn main() {
 #[cfg(test)]
 mod diesel_tests {
     use super::*;
-    use schema::stones::dsl::*;
+    use crate::schema::stones::dsl::*;
 
     #[test]
     fn test_setup() {
@@ -36,7 +33,7 @@ mod diesel_tests {
         if let Ok(results) = results {
             println!("Tracking {} stones", results.len());
             assert_eq!(0, results.len());
-            return
+            return;
         }
         panic!("Error loading stones");
     }
