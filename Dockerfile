@@ -1,11 +1,11 @@
-FROM rust:1.30 AS build
+FROM rust:1.32 AS build
 
 RUN mkdir -p /code/src
 WORKDIR /code
 
 RUN cargo install diesel_cli --no-default-features --features postgres
 
-ADD Cargo.* .
+ADD Cargo.* ./
 RUN echo "fn main() {}" > /code/src/main.rs && cargo fetch
 
 ADD src src
